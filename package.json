@@ -1,0 +1,35 @@
+{
+  "name": "route",
+  "version": "0.0.0",
+  "description": "Route",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  },
+  "scripts": {
+    "build": "webpack-cli ./src/app.tsx --config webpack-config.js",
+    "clean": "tsc --build --clean"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.14",
+    "@types/react-dom": "^16.9.8",
+    "eslint": "^7.0.0",
+    "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "@types/leaflet": "^1.5.12",
+    "@types/react-leaflet": "^2.5.1",
+    "css-loader": "^3.5.3",
+    "express": "^4.17.1",
+    "file-loader": "^6.0.0",
+    "leaflet": "^1.6.0",
+    "path": "^0.12.7",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-leaflet": "^2.7.0",
+    "style-loader": "^1.2.1",
+    "ts-loader": "^7.0.4",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}
