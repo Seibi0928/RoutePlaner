@@ -1,3 +1,0 @@
-C:\Users\ryo2\source\repos\Route\Route\obj\Debug\Route.njsprojAssemblyReference.cache
-C:\Users\ryo2\source\repos\Route\Route\obj\Debug\Route.njsproj.CoreCompileInputs.cache
-C:\Users\ryo2\source\repos\Route\Route\bin\Microsoft.NodejsTools.WebRole.dll

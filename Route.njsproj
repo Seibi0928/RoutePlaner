@@ -59,7 +59,8 @@
     <TypeScriptCompile Include="src\RouteMap\Pin.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="src\routeMap\routeMap.tsx">
+    <TypeScriptCompile Include="src\RouteMap\RouteMap.tsx" />
+    <TypeScriptCompile Include="src\RouteMap\Routing.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
   </ItemGroup>
