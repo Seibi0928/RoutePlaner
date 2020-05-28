@@ -1,17 +1,13 @@
-import { MapLayer, MapLayerProps } from 'react-leaflet';
-import * as L from 'leaflet';
+import { MapLayer, MapLayerProps, withLeaflet } from 'react-leaflet';
+import * as L from 'leaflet'
+import 'leaflet-routing-machine';
 import { Map as LeafMap } from 'react-leaflet';
 
-export class RoutingLayer extends MapLayer<{ map: LeafMap } & MapLayerProps, L.Layer> {
+class RoutingLayer extends MapLayer<{ map: LeafMap } & MapLayerProps, L.Layer> {
     public createLeafletElement(_: unknown): L.Layer {
         const { map } = this.props;
         let leafletElement = L.Routing.control({
-            waypoints: [
-                L.latLng(16.506, 80.648),
-                L.latLng(17.384, 78.4866),
-                L.latLng(12.971, 77.5945)
-            ],
-            // router: new L.Routing.Google(),
+            router: new L.Routing.OSRMv1(),
             lineOptions: {
                 styles: [
                     {
@@ -21,11 +17,16 @@ export class RoutingLayer extends MapLayer<{ map: LeafMap } & MapLayerProps, L.L
                     }
                 ]
             },
-            addWaypoints: false,
-            draggableWaypoints: false,
             fitSelectedRoutes: false,
             showAlternatives: false
-        }).addTo(map.leafletElement);
+        }).addTo(map.leafletElement)
+        .setWaypoints([
+            L.latLng(16.506, 80.648),
+            L.latLng(17.384, 78.4866),
+            L.latLng(12.971, 77.5945)
+        ]);
         return leafletElement.getPlan();
     }
 }
+
+export default withLeaflet(RoutingLayer);

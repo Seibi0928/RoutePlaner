@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "webpack-cli ./src/app.tsx --config webpack-config.js",
-    "clean": "tsc --build --clean"
+    "clean": "tsc --build --clean",
+    "build-watch": "webpack-cli ./src/app.tsx --config webpack-config.js --watch"
   },
   "devDependencies": {
     "@types/node": "^8.0.14",

@@ -3,8 +3,8 @@ import 'leaflet/dist/leaflet.css';
 import { Map as LeafMap, TileLayer } from 'react-leaflet';
 import * as React from 'react';
 import { LatLng, LeafletMouseEvent, Routing } from 'leaflet';
-import { PinValue, Pin } from './Pin';
-import { RoutingLayer } from './Routing';
+import { PinValue } from './Pin';
+import RoutingLayer from './Routing';
 
 interface RouteMapState {
     pins: PinValue[];
@@ -17,7 +17,9 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
 
     constructor(prop: { }) {
         super(prop);
-        this.state = { pins: [], isMapInit: false };
+        this.state = {
+            pins: [], isMapInit: false
+        };
     }
 
     render() {
@@ -29,14 +31,14 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" />
-                {this.state.pins.map(p => <Pin key={p.key} pos={p.pos} />)}
-                <RoutingLayer map={this.map} />
+                {/* {this.state.pins.map(p => <Pin key={p.key} pos={p.pos} />)} */}
+                {this.state.isMapInit && <RoutingLayer map={this.map} />}
             </LeafMap>
         );
     }
 
-    private saveMap(map: unknown): void {
-        this.map = map as LeafMap;
+    private saveMap = (map: LeafMap): void => {
+        this.map = map;
         this.setState({
             pins: this.state.pins,
             isMapInit: true
