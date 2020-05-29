@@ -23,9 +23,8 @@ class RoutingLayer extends MapLayer<{ map: LeafMap } & MapLayerProps, L.Layer> {
             showAlternatives: false
         }).addTo(map.leafletElement)
         .setWaypoints([
-            L.latLng(16.506, 80.648),
-            L.latLng(17.384, 78.4866),
-            L.latLng(12.971, 77.5945)
+            L.latLng(34, 135),
+            L.latLng(139, 49)
         ]);
         return leafletElement.getPlan();
     }

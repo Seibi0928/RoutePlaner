@@ -31,7 +31,6 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" />
-                {/* {this.state.pins.map(p => <Pin key={p.key} pos={p.pos} />)} */}
                 {this.state.isMapInit && <RoutingLayer map={this.map!} />}
             </LeafMap>
         );
