@@ -9,7 +9,7 @@
   "scripts": {
     "build": "webpack-cli ./src/app.tsx --config webpack-config.js",
     "clean": "tsc --build --clean",
-    "build-watch": "webpack-cli ./src/app.tsx --config webpack-config.js --watch"
+    "build-watch": "webpack-cli ./src/app.tsx --config webpack-config.js --watch --progress"
   },
   "devDependencies": {
     "@types/node": "^8.0.14",

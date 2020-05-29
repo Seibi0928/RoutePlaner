@@ -7,7 +7,9 @@ class RoutingLayer extends MapLayer<{ map: LeafMap } & MapLayerProps, L.Layer> {
     public createLeafletElement(_: unknown): L.Layer {
         const { map } = this.props;
         let leafletElement = L.Routing.control({
-            router: new L.Routing.OSRMv1(),
+            router: new L.Routing.OSRMv1({
+                serviceUrl: 'http://127.0.0.1:5000/route/v1'
+            }),
             lineOptions: {
                 styles: [
                     {

@@ -31,5 +31,8 @@ module.exports = {
             }
         ]
     },
-    cache: true
+    cache: true,
+    watchOptions: {
+        poll: true
+    }
 }

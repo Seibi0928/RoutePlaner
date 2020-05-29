@@ -13,7 +13,7 @@ interface RouteMapState {
 
 export default class RouteMap extends React.Component<{}, RouteMapState> {
     private mockKey = 1;
-    private map: LeafMap;
+    private map: LeafMap | null = null;
 
     constructor(prop: { }) {
         super(prop);
@@ -32,7 +32,7 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" />
                 {/* {this.state.pins.map(p => <Pin key={p.key} pos={p.pos} />)} */}
-                {this.state.isMapInit && <RoutingLayer map={this.map} />}
+                {this.state.isMapInit && <RoutingLayer map={this.map!} />}
             </LeafMap>
         );
     }
