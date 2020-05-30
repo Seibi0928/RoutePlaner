@@ -2,8 +2,7 @@
 import 'leaflet/dist/leaflet.css';
 import { Map as LeafMap, TileLayer } from 'react-leaflet';
 import * as React from 'react';
-import { LatLng, LeafletMouseEvent, Routing } from 'leaflet';
-import { PinValue } from './Pin';
+import { LatLng, LeafletMouseEvent } from 'leaflet';
 import RoutingLayer from './Routing';
 import L = require('leaflet');
 

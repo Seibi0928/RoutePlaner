@@ -21,12 +21,10 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
 
     public updateLeafletElement(_: unknown, prop: RoutingLayerProp) {
         const { map, clickedPosition, routingControl } = this.props;
-        
+
         if (clickedPosition === null) { return routingControl.getPlan(); }
 
-        const container = L.DomUtil.create('div'),
-            startBtn = this.createButton('Start from this location', container),
-            destinationBtn = this.createButton('Go to this location', container);
+        const container = L.DomUtil.create('div');
 
         L.popup()
             .setContent(container)
@@ -36,16 +34,22 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
         const newWaypoint: L.Routing.Waypoint = {
             latLng: clickedPosition
         }
-
-        L.DomEvent.on(startBtn, 'click', () => {
-            routingControl.spliceWaypoints(0, 1, newWaypoint);
-            map.leafletElement.closePopup();
-        });
-
-        L.DomEvent.on(destinationBtn, 'click', () => {
-            routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, newWaypoint);
-            map.leafletElement.closePopup();
-        });
+        
+        // よくわからないけどwaypointsの初期値にはlatLngがundefinedな要素が入っている
+        // TODO: githubのソースコード確認する
+        if (routingControl.getWaypoints().every(x => !x.latLng)) {
+            const destinationBtn = this.createButton('Start from this location', container);
+            L.DomEvent.on(destinationBtn, 'click', () => {
+                routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, newWaypoint);
+                map.leafletElement.closePopup();
+            });
+        } else {
+            const startBtn = this.createButton('Go to this location', container);
+            L.DomEvent.on(startBtn, 'click', () => {
+                routingControl.spliceWaypoints(0, 1, newWaypoint);
+                map.leafletElement.closePopup();
+            });
+        }
 
         return routingControl.getPlan();
     }
