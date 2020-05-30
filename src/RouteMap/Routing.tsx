@@ -1,8 +1,7 @@
-import { MapLayer, MapLayerProps, withLeaflet, MapProps } from 'react-leaflet';
-import * as L from 'leaflet'
+import { MapLayer, MapLayerProps, withLeaflet } from 'react-leaflet';
+import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import { Map as LeafMap } from 'react-leaflet';
-import RouteMap from './RouteMap';
 
 type RoutingLayerProp = {
     map: LeafMap,

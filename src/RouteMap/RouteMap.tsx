@@ -32,11 +32,12 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" />
-                {this.map !== null                    
+                {this.map !== null
+                    && this.state.routingControl !== null                    
                     && <RoutingLayer
                         map={this.map}
                         clickedPosition={this.state.clickedPosition}
-                        routingControl={this.state.routingControl!} />}
+                        routingControl={this.state.routingControl} />}
             </LeafMap>
         );
     }
