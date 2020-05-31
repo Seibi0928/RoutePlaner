@@ -21,51 +21,79 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
     }
 
     public updateLeafletElement(_: unknown, prop: RoutingLayerProp) {
-        const { map, clickedPosition, routingControl } = this.props;
+        const { clickedPosition, routingControl } = this.props;
 
         if (clickedPosition === null) { return routingControl.getPlan(); }
 
-        const container = L.DomUtil.create('div');
-        
-        const newWaypoint: L.Routing.Waypoint = {
-            latLng: clickedPosition
-        }
+        const newWaypoint: L.Routing.Waypoint = { latLng: clickedPosition };
 
-        // よくわからないけどwaypointsの初期値にはlatLngがundefinedな要素が入っている
-        // TODO: githubのソースコード確認する
-        if (routingControl.getWaypoints().every(x => !x.latLng)) {
-
-            const popOption: L.PopupOptions = { minWidth: 212 }
-            this.openPopup(popOption, container, clickedPosition, map.leafletElement);
-
-            const destinationBtn = this.createButton('Start from this location', container);
-            L.DomEvent.on(destinationBtn, 'click', () => {
-                routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, newWaypoint);
-                map.leafletElement.closePopup();
-            });
+        if (RoutingLayer.wayPointsIsInitialState(routingControl.getWaypoints())) {
+            this.setStartPopup(clickedPosition, newWaypoint);
         } else {
-
-            const popOption: L.PopupOptions = { minWidth: 169 };
-            this.openPopup(popOption, container, clickedPosition, map.leafletElement);
-
-            const startBtn = this.createButton('Go to this location', container);
-            L.DomEvent.on(startBtn, 'click', () => {
-                routingControl.spliceWaypoints(0, 1, newWaypoint);
-                map.leafletElement.closePopup();
-            });
+            this.setGotoPopup(clickedPosition, newWaypoint);
         }
 
         return routingControl.getPlan();
     }
 
-    private openPopup(popOption: L.PopupOptions, container: HTMLElement, clickedPosition: L.LatLng, leafLetMap: L.Map) {
+    // よくわからないけどwaypointsの初期値にはlatLngがundefinedな要素が入っている
+    // TODO: githubのソースコード確認する
+    private static wayPointsIsInitialState(waypoints: L.Routing.Waypoint[]): boolean {
+        return waypoints.every(w => !w.latLng);
+    }
+
+    private static isNotSetDestinationPoint(waypoints: L.Routing.Waypoint[]): boolean {
+        return waypoints.some(x => !x.latLng);
+    }
+
+    private setGotoPopup(clickedPosition: L.LatLng, newWaypoint: L.Routing.Waypoint) {
+
+        const { map, routingControl } = this.props;
+
+        const container = L.DomUtil.create('div');
+        const popOption: L.PopupOptions = { minWidth: 169 };
+
+        RoutingLayer.openPopup(popOption, container, clickedPosition, map.leafletElement);
+
+        const gotoBtn = RoutingLayer.createButton('Go to this location', container);
+
+        L.DomEvent.on(gotoBtn, 'click', () => {
+            if (RoutingLayer.isNotSetDestinationPoint(routingControl.getWaypoints())) {
+                const waypointsSize = routingControl.getWaypoints().length;
+                routingControl.spliceWaypoints(waypointsSize - 1, 1, newWaypoint);
+            } else {
+                const prevWayPoints = routingControl.getWaypoints();
+                routingControl.setWaypoints(prevWayPoints.concat([newWaypoint]));
+            }
+            map.leafletElement.closePopup();
+        });
+    }
+
+    private setStartPopup(clickedPosition: L.LatLng, newWaypoint: L.Routing.Waypoint) {
+
+        const { map, routingControl } = this.props;
+
+        const container = L.DomUtil.create('div');
+        const popOption: L.PopupOptions = { minWidth: 212 };
+
+        RoutingLayer.openPopup(popOption, container, clickedPosition, map.leafletElement);
+
+        const startBtn = RoutingLayer.createButton('Start from this location', container);
+
+        L.DomEvent.on(startBtn, 'click', () => {
+            routingControl.spliceWaypoints(0, 1, newWaypoint);
+            map.leafletElement.closePopup();
+        });
+    }
+
+    private static openPopup(popOption: L.PopupOptions, container: HTMLElement, clickedPosition: L.LatLng, leafLetMap: L.Map) {
         L.popup(popOption)
             .setContent(container)
             .setLatLng(clickedPosition)
             .openOn(leafLetMap);
     }
 
-    private createButton(label: string, container: HTMLElement) {
+    private static createButton(label: string, container: HTMLElement) {
         var btn = L.DomUtil.create('button', '', container);
         btn.setAttribute('type', 'button');
         btn.innerHTML = label;
