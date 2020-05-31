@@ -1,4 +1,4 @@
-﻿import './RouteMap.css';
+﻿import './RouteMap.scss';
 import 'leaflet/dist/leaflet.css';
 import { Map as LeafMap, TileLayer } from 'react-leaflet';
 import * as React from 'react';
@@ -53,7 +53,6 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
     private handleClick(mouseEvent: LeafletMouseEvent): void {
 
         if (this.map === null) { return; }
-
         this.setState({
             clickedPosition: mouseEvent.latlng,
             routingControl: this.state.routingControl
