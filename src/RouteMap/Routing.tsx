@@ -2,6 +2,7 @@ import { MapLayer, MapLayerProps, withLeaflet } from 'react-leaflet';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import { Map as LeafMap } from 'react-leaflet';
+import './Routing.scss';
 
 type RoutingLayerProp = {
     map: LeafMap,
@@ -25,25 +26,28 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
         if (clickedPosition === null) { return routingControl.getPlan(); }
 
         const container = L.DomUtil.create('div');
-
-        L.popup()
-            .setContent(container)
-            .setLatLng(clickedPosition)
-            .openOn(map.leafletElement);
-
+        
         const newWaypoint: L.Routing.Waypoint = {
             latLng: clickedPosition
         }
-        
+
         // よくわからないけどwaypointsの初期値にはlatLngがundefinedな要素が入っている
         // TODO: githubのソースコード確認する
         if (routingControl.getWaypoints().every(x => !x.latLng)) {
+
+            const popOption: L.PopupOptions = { minWidth: 212 }
+            this.openPopup(popOption, container, clickedPosition, map.leafletElement);
+
             const destinationBtn = this.createButton('Start from this location', container);
             L.DomEvent.on(destinationBtn, 'click', () => {
                 routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, newWaypoint);
                 map.leafletElement.closePopup();
             });
         } else {
+
+            const popOption: L.PopupOptions = { minWidth: 169 };
+            this.openPopup(popOption, container, clickedPosition, map.leafletElement);
+
             const startBtn = this.createButton('Go to this location', container);
             L.DomEvent.on(startBtn, 'click', () => {
                 routingControl.spliceWaypoints(0, 1, newWaypoint);
@@ -52,6 +56,13 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
         }
 
         return routingControl.getPlan();
+    }
+
+    private openPopup(popOption: L.PopupOptions, container: HTMLElement, clickedPosition: L.LatLng, leafLetMap: L.Map) {
+        L.popup(popOption)
+            .setContent(container)
+            .setLatLng(clickedPosition)
+            .openOn(leafLetMap);
     }
 
     private createButton(label: string, container: HTMLElement) {
