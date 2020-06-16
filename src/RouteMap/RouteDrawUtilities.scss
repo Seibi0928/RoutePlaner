@@ -1,0 +1,29 @@
+.route-draw-utilities {
+    height: 2rem;
+
+    .waypoint-remove-button {
+        float: right;
+    
+        & > input {
+            cursor: pointer;
+            margin-left: 10px;
+            background-color: #ffffff;
+            border: none;
+            height: 26px;
+            line-height: 26px;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+            border-radius: 4px;
+            -webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+            outline: none;
+            font-weight: bold;
+    
+            &:hover {
+                background-color: rgb(238, 235, 235);
+            }
+        }
+    }
+}

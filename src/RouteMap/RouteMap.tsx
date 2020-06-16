@@ -5,6 +5,7 @@ import * as React from 'react';
 import { LatLng, LeafletMouseEvent } from 'leaflet';
 import RoutingLayer from './Routing';
 import L = require('leaflet');
+import RouteDrawUtilities from './RouteDrawUtilities';
 
 interface RouteMapState {
     clickedPosition: L.LatLng | null;
@@ -25,24 +26,27 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
     render() {
         const pos = new LatLng(35, 139);
         return (
-            <LeafMap center={pos} zoom={13}
-                ref={this.saveMap}
-                onclick={e => this.handleClick(e)}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" />
-                {this.map !== null
-                    && this.state.routingControl !== null                    
-                    && <RoutingLayer
-                        map={this.map}
-                        clickedPosition={this.state.clickedPosition}
-                        routingControl={this.state.routingControl} />}
-            </LeafMap>
+            <div>
+                <RouteDrawUtilities routingControl={this.state.routingControl} />
+                <LeafMap center={pos} zoom={13}
+                    ref={this.saveMap}
+                    onclick={e => this.handleClick(e)}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors" />
+                    {this.map !== null
+                        && this.state.routingControl !== null
+                        && <RoutingLayer
+                            map={this.map}
+                            clickedPosition={this.state.clickedPosition}
+                            routingControl={this.state.routingControl} />}
+                </LeafMap>
+            </div>
         );
     }
 
     private saveMap = (map: LeafMap): void => {
-        
+
         this.map = map;
 
         this.setState({
