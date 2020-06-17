@@ -7,9 +7,13 @@ import RoutingLayer from './Routing';
 import L = require('leaflet');
 import RouteDrawUtilities from './RouteDrawUtilities';
 
+export type WayPoints = L.Routing.Waypoint[];
+
 interface RouteMapState {
     clickedPosition: L.LatLng | null;
     routingControl: L.Routing.Control | null;
+    prevWaypointsHistory: WayPoints[];
+    nextWaypointsHistory: WayPoints[];
 }
 
 export default class RouteMap extends React.Component<{}, RouteMapState> {
@@ -19,7 +23,9 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
         super(prop);
         this.state = {
             clickedPosition: null,
-            routingControl: null
+            routingControl: null,
+            prevWaypointsHistory: [],
+            nextWaypointsHistory: []
         };
     }
 
@@ -27,7 +33,14 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
         const pos = new LatLng(35, 139);
         return (
             <div>
-                <RouteDrawUtilities routingControl={this.state.routingControl} />
+                <RouteDrawUtilities
+                    routingControl={this.state.routingControl}
+                    prevWaypointsHistory={this.state.prevWaypointsHistory}
+                    nextWaypointsHistory={this.state.nextWaypointsHistory}
+                    prevClick={() => this.handlePrevClick()}
+                    nextClick={() => this.handleNextClick()}
+                    clearClick={() => this.handleClearClick()}
+                />
                 <LeafMap center={pos} zoom={13}
                     ref={this.saveMap}
                     onclick={e => this.handleClick(e)}>
@@ -39,7 +52,9 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
                         && <RoutingLayer
                             map={this.map}
                             clickedPosition={this.state.clickedPosition}
-                            routingControl={this.state.routingControl} />}
+                            routingControl={this.state.routingControl}
+                            prevWayPointsHistory={this.state.prevWaypointsHistory}
+                            gotoButtonClick={() => this.handleGotoButtonClick()} />}
                 </LeafMap>
             </div>
         );
@@ -59,7 +74,6 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
         if (this.map === null) { return; }
         this.setState({
             clickedPosition: mouseEvent.latlng,
-            routingControl: this.state.routingControl
         });
     }
 
@@ -81,5 +95,65 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
             fitSelectedRoutes: false,
             showAlternatives: false
         }).addTo(map);
+    }
+
+    private handleGotoButtonClick() {
+        this.setState({
+            routingControl: this.state.routingControl,
+            nextWaypointsHistory: [],
+            prevWaypointsHistory: this.state.prevWaypointsHistory.slice()
+        });
+    }
+
+    private handlePrevClick() {
+
+        const currentControl = this.state.routingControl;
+
+        if (currentControl === null) { return; }
+
+        const prevHistorySize = this.state.prevWaypointsHistory.length;
+
+        if (prevHistorySize <= 0) { return; }
+
+        this.setState({
+            clickedPosition: null,
+            nextWaypointsHistory: [currentControl.getWaypoints()].concat(this.state.nextWaypointsHistory),
+            prevWaypointsHistory: this.state.prevWaypointsHistory.slice(0, prevHistorySize - 1)
+        });
+
+        currentControl.setWaypoints(this.state.prevWaypointsHistory[prevHistorySize - 1]);
+    }
+
+    private handleNextClick() {
+
+        const currentControl = this.state.routingControl;
+
+        if (currentControl === null) { return; }
+
+        if (this.state.nextWaypointsHistory.length <= 0) { return; }
+
+        this.setState({
+            clickedPosition: null,
+            nextWaypointsHistory: this.state.nextWaypointsHistory.slice(1),
+            prevWaypointsHistory: this.state.prevWaypointsHistory.concat([currentControl.getWaypoints()])
+        });
+
+        currentControl.setWaypoints(this.state.nextWaypointsHistory[0]);
+    }
+
+    handleClearClick(): void {
+
+        let toBePrevHistory = this.state.prevWaypointsHistory;
+        if (this.state.routingControl?.getWaypoints()) {
+            toBePrevHistory = toBePrevHistory.concat([this.state.routingControl.getWaypoints()]);
+        }
+
+        this.state.routingControl?.setWaypoints([]);
+        this.setState({
+            routingControl: this.state.routingControl,
+            clickedPosition: null,
+            nextWaypointsHistory: [],
+            prevWaypointsHistory: toBePrevHistory
+        });
     }
 }

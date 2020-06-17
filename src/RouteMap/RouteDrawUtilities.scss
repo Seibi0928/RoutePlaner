@@ -1,7 +1,7 @@
 .route-draw-utilities {
     height: 2rem;
 
-    .waypoint-remove-button {
+    .waypoint-operate-button {
         float: right;
     
         & > input {
@@ -23,6 +23,12 @@
     
             &:hover {
                 background-color: rgb(238, 235, 235);
+            }
+
+            &.disabled {
+                pointer-events: none;
+                background-color: #cccccc;
+                cursor: not-allowed;
             }
         }
     }

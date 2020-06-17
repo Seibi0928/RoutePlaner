@@ -3,11 +3,15 @@ import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import { Map as LeafMap } from 'react-leaflet';
 import './Routing.scss';
+import { WayPoints } from './RouteMap';
+import LeafLetUtilityLibrary from './LeafletUtilityLibrary';
 
 type RoutingLayerProp = {
     map: LeafMap,
     clickedPosition: L.LatLng | null,
-    routingControl: L.Routing.Control
+    routingControl: L.Routing.Control,
+    prevWayPointsHistory: WayPoints[];
+    gotoButtonClick: () => void;
 } & MapLayerProps;
 
 class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
@@ -27,7 +31,7 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
 
         const newWaypoint: L.Routing.Waypoint = { latLng: clickedPosition };
 
-        if (RoutingLayer.wayPointsIsInitialState(routingControl.getWaypoints())) {
+        if (LeafLetUtilityLibrary.wayPointsIsInitialState(routingControl.getWaypoints())) {
             this.setStartPopup(clickedPosition, newWaypoint);
         } else {
             this.setGotoPopup(clickedPosition, newWaypoint);
@@ -36,19 +40,14 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
         return routingControl.getPlan();
     }
 
-    // よくわからないけどwaypointsの初期値にはlatLngがundefinedな要素が入っている
-    // TODO: githubのソースコード確認する
-    private static wayPointsIsInitialState(waypoints: L.Routing.Waypoint[]): boolean {
-        return waypoints.every(w => !w.latLng);
-    }
-
-    private static isNotSetDestinationPoint(waypoints: L.Routing.Waypoint[]): boolean {
-        return waypoints.some(x => !x.latLng);
-    }
-
     private setGotoPopup(clickedPosition: L.LatLng, newWaypoint: L.Routing.Waypoint) {
 
-        const { map, routingControl } = this.props;
+        const {
+            map,
+            routingControl,
+            prevWayPointsHistory,
+            gotoButtonClick
+        } = this.props;
 
         const container = L.DomUtil.create('div');
         const popOption: L.PopupOptions = { minWidth: 169 };
@@ -58,7 +57,10 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
         const gotoBtn = RoutingLayer.createButton('Go to this location', container);
 
         L.DomEvent.on(gotoBtn, 'click', () => {
-            if (RoutingLayer.isNotSetDestinationPoint(routingControl.getWaypoints())) {
+            gotoButtonClick();
+            prevWayPointsHistory.push(routingControl.getWaypoints());
+
+            if (LeafLetUtilityLibrary.isNotSetDestinationPoint(routingControl.getWaypoints())) {
                 const waypointsSize = routingControl.getWaypoints().length;
                 routingControl.spliceWaypoints(waypointsSize - 1, 1, newWaypoint);
             } else {
@@ -71,7 +73,11 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
 
     private setStartPopup(clickedPosition: L.LatLng, newWaypoint: L.Routing.Waypoint) {
 
-        const { map, routingControl } = this.props;
+        const {
+            map,
+            routingControl,
+            prevWayPointsHistory
+        } = this.props;
 
         const container = L.DomUtil.create('div');
         const popOption: L.PopupOptions = { minWidth: 212 };
@@ -81,6 +87,7 @@ class RoutingLayer extends MapLayer<RoutingLayerProp, L.Layer> {
         const startBtn = RoutingLayer.createButton('Start from this location', container);
 
         L.DomEvent.on(startBtn, 'click', () => {
+            prevWayPointsHistory.push(routingControl.getWaypoints());
             routingControl.spliceWaypoints(0, 1, newWaypoint);
             map.leafletElement.closePopup();
         });
