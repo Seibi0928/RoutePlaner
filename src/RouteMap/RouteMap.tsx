@@ -73,7 +73,8 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
 
         if (this.map === null) { return; }
         this.setState({
-            clickedPosition: mouseEvent.latlng,
+            routingControl: this.state.routingControl,
+            clickedPosition: mouseEvent.latlng
         });
     }
 
@@ -98,10 +99,9 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
     }
 
     private handleGotoButtonClick() {
-        this.setState({
+         this.setState({
             routingControl: this.state.routingControl,
-            nextWaypointsHistory: [],
-            prevWaypointsHistory: this.state.prevWaypointsHistory.slice()
+            nextWaypointsHistory: []
         });
     }
 
