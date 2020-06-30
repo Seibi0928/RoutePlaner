@@ -37,4 +37,14 @@ services:
     #   - seccomp:unconfined
 
     # Overrides default command so things don't shut down after the process ends.
-    command: /bin/sh -c "while sleep 1000; do :; done"  
+    command: /bin/sh -c "while sleep 1000; do :; done" 
+    depends_on: 
+      - osrm-backend
+  osrm-backend:
+    image: osrm/osrm-backend
+    ports:
+      - "5000:5000" 
+    volumes: 
+      - ./osrm-backend-data:/data
+    command: "osrm-routed --algorithm mld /data/japan-latest.osrm"
+    container_name: routing_machine
