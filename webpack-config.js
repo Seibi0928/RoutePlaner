@@ -1,7 +1,9 @@
+const webpack = require("webpack");
+
 module.exports = {
     devtool: 'source-map',
     entry: "./src/app.tsx",
-    mode: "development",
+    mode: process.env.NODE_ENV,
     output: {
         filename: "./app-bundle.js"
     },
@@ -38,5 +40,11 @@ module.exports = {
     cache: true,
     watchOptions: {
         poll: true
-    }
-}
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+            OSRM_BACKEND_URL: JSON.stringify(process.env.OSRM_BACKEND_URL)
+        })
+    ]
+};

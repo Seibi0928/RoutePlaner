@@ -9,6 +9,8 @@ import RouteDrawUtilities from './RouteDrawUtilities';
 
 export type WayPoints = L.Routing.Waypoint[];
 
+declare const OSRM_BACKEND_URL: string;
+
 interface RouteMapState {
     clickedPosition: L.LatLng | null;
     routingControl: L.Routing.Control | null;
@@ -82,7 +84,8 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
         return L.Routing.control({
             waypoints: waypoints,
             router: new L.Routing.OSRMv1({
-                serviceUrl: 'http://127.0.0.1:5000/route/v1'
+                serviceUrl: `${OSRM_BACKEND_URL}/route/v1`,
+                profile: 'bike'
             }),
             lineOptions: {
                 styles: [

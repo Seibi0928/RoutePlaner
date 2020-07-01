@@ -37,7 +37,7 @@ services:
     #   - seccomp:unconfined
 
     # Overrides default command so things don't shut down after the process ends.
-    command: /bin/sh -c "while sleep 1000; do :; done" 
+    command: /bin/sh -c "npm run build;npm start;while sleep 1000; do :; done" 
     depends_on: 
       - osrm-backend
   osrm-backend:
