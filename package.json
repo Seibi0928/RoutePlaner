@@ -9,14 +9,20 @@
   "scripts": {
     "build": "webpack-cli ./src/app.tsx --config webpack-config.js",
     "clean": "tsc --build --clean",
-    "build-watch": "webpack-cli ./src/app.tsx --config webpack-config.js --watch --progress"
+    "build-watch": "webpack-cli ./src/app.tsx --config webpack-config.js --watch --progress",
+    "test": "jest",
+    "test-watch": "jest  --watch"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.3",
     "@types/node": "^8.0.14",
     "@types/react-dom": "^16.9.8",
     "eslint": "^7.0.0",
+    "jest": "^26.1.0",
+    "jest-css-modules": "^2.1.0",
     "sass": "^1.26.7",
     "sass-loader": "^8.0.2",
+    "ts-jest": "^26.1.1",
     "typescript": "^3.9.3",
     "webpack": "^4.43.0"
   },
