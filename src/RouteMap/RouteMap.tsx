@@ -5,7 +5,7 @@ import * as React from 'react';
 import { LatLng, LeafletMouseEvent } from 'leaflet';
 import RoutingLayer from './Routing';
 import L = require('leaflet');
-import RouteDrawUtilities from './RouteDrawUtilities';
+import { RouteDrawUtilities } from './RouteDrawUtilities';
 
 export type WayPoints = L.Routing.Waypoint[];
 
@@ -102,13 +102,13 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
     }
 
     private handleGotoButtonClick() {
-         this.setState({
+        this.setState({
             routingControl: this.state.routingControl,
             nextWaypointsHistory: []
         });
     }
 
-    private handlePrevClick() {
+    handlePrevClick() {
 
         const currentControl = this.state.routingControl;
 

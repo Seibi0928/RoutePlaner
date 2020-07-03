@@ -11,5 +11,7 @@ module.exports = {
     },
     "moduleNameMapper": {
         "\\.(css|less|scss|sss|styl)$": "<rootDir>/node_modules/jest-css-modules"
-    }
+    },
+    "snapshotSerializers": ["enzyme-to-json/serializer"],
+    "setupFilesAfterEnv": ["<rootDir>/src/test/setupEnzyme.ts"]
 };

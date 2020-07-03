@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as L from 'leaflet';
 import './RouteDrawUtilities.scss';
 import { WayPoints } from './RouteMap';
-import LeafLetUtilityLibrary from './LeafletUtilityLibrary';
 
 interface RouteDrawUtilitiesProp {
     routingControl: L.Routing.Control | null;
@@ -13,7 +12,7 @@ interface RouteDrawUtilitiesProp {
     clearClick: () => void;
 }
 
-export default class RouteDrawUtilities extends React.Component<RouteDrawUtilitiesProp, {}> {
+export class RouteDrawUtilities extends React.Component<RouteDrawUtilitiesProp, {}> {
 
     render(): JSX.Element {
         return (
@@ -28,11 +27,12 @@ export default class RouteDrawUtilities extends React.Component<RouteDrawUtiliti
 
 const commonClassName = 'waypoint-operate-button';
 
-function PrevWayPointButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.Element {
+export function PrevWayPointButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.Element {
 
     return (
         <div className={commonClassName}>
             <input
+                id="prevButton"
                 type="button"
                 onClick={() => props.routeMap.prevClick()}
                 value="Prev"
@@ -42,7 +42,7 @@ function PrevWayPointButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.El
     );
 }
 
-function NextWayPointsButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.Element {
+export function NextWayPointsButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.Element {
 
     return (
         <div className={commonClassName}>
@@ -56,7 +56,7 @@ function NextWayPointsButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.E
     );
 }
 
-function ClearWayPointsButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.Element {
+export function ClearWayPointsButton(props: { routeMap: RouteDrawUtilitiesProp }): JSX.Element {
 
     const currentWayPoint = props.routeMap.routingControl?.getWaypoints() ?? [];
 
