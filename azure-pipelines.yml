@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  disable.coverage.autogenerate: 'true'
+  disable.coverage.autogenerate: 'false'
 
 steps:
 - task: NodeTool@0
