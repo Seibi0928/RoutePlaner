@@ -21,9 +21,8 @@ steps:
     npm run test:ci
   displayName: 'build and test'
 
-- task: PublishCodeCoverageResults@1
+- task: PublishTestResults@2
   inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/index.html'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
-    failIfCoverageEmpty: true
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'junit.xml'
+    testRunTitle: 'Jest Unit Test'
