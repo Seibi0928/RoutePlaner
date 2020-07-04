@@ -18,5 +18,5 @@ steps:
 - script: |
     npm install
     npm build
-    npm test
-  displayName: 'npm install, run webpack'
+    npm test:ci
+  displayName: 'build and test'
