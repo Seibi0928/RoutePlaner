@@ -12,7 +12,7 @@
     "build:watch": "webpack-cli ./src/app.tsx --config webpack-config.js --watch --progress",
     "test": "jest",
     "test:watch": "jest  --watch",
-    "test:ci": "jest --reporters=jest-junit --coverage"
+    "test:ci": "jest -i --ci --runInBand"
   },
   "devDependencies": {
     "@types/enzyme": "^3.10.5",
@@ -49,14 +49,5 @@
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.5",
     "webpack-cli": "^3.3.12"
-  },
-  "reporters": [
-    "default",
-    "jest-junit"
-  ],
-  "coverageReporters": [
-    "text",
-    "html",
-    "cobertura"
-  ]
+  }
 }
