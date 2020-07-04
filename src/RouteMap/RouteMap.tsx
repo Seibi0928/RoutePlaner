@@ -84,7 +84,7 @@ export default class RouteMap extends React.Component<{}, RouteMapState> {
         return L.Routing.control({
             waypoints: waypoints,
             router: new L.Routing.OSRMv1({
-                serviceUrl: `${OSRM_BACKEND_URL}/route/v1`,
+                serviceUrl: `osm-backend/route/v1`,
                 profile: 'bike'
             }),
             lineOptions: {

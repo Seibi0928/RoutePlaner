@@ -43,8 +43,7 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-            OSRM_BACKEND_URL: JSON.stringify(process.env.OSRM_BACKEND_URL)
+            NODE_ENV: JSON.stringify(process.env.NODE_ENV)
         })
     ]
 };

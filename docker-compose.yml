@@ -40,6 +40,7 @@ services:
     command: /bin/sh -c "npm run build;npm start;while sleep 1000; do :; done" 
     depends_on: 
       - osrm-backend
+    container_name: frontend_server
   osrm-backend:
     image: osrm/osrm-backend
     ports:
@@ -48,3 +49,12 @@ services:
       - ./osrm-backend-data:/data
     command: "osrm-routed --algorithm mld /data/japan-latest.osrm"
     container_name: routing_machine
+  proxy:
+    image: nginx:latest
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8000:80"
+    depends_on:
+      - front
+      - osrm-backend
