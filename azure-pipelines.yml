@@ -26,3 +26,10 @@ steps:
     testResultsFormat: 'JUnit'
     testResultsFiles: 'junit.xml'
     testRunTitle: 'Jest Unit Test'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/coverage-final.json'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+    failIfCoverageEmpty: true
