@@ -13,7 +13,7 @@ variables:
   dockerRegistryServiceConnection: '2664dabf-8169-43a1-8767-2a15b4241f2f'
   imageRepository: 'harunarirouteplaner'
   containerRegistry: 'ryosrouteplanner.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile.production'
   tag: '$(Build.BuildId)'
   
   # Agent VM image name
@@ -37,3 +37,22 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
+- stage: Deploy
+  displayName: Deploy the container
+  dependsOn: Build
+  jobs:
+  - job: Deploy
+    displayName: Deploy job
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: AzureWebAppContainer@1
+        inputs:
+          azureSubscription: '従量課金 (e5c1b0a2-8d26-4e8a-a903-8e68ff7a62e3)'
+          appName: 'route-planner'
+          deployToSlotOrASE: true
+          resourceGroupName: 'route-planner'
+          slotName: 'production'
+          containers: '$(dockerRegistryServiceConnection)/$(imageRepository):$(tag)'
+
