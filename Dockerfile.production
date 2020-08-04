@@ -11,6 +11,7 @@ COPY server.js ./
 COPY tsconfig.json ./
 COPY webpack-config.js ./
 COPY index.html ./
+ADD src /src/
 
 RUN npm install
 RUN npm run-script build
