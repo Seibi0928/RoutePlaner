@@ -6,30 +6,67 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+resources:
+- repo: self
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '2664dabf-8169-43a1-8767-2a15b4241f2f'
+  imageRepository: 'harunarirouteplaner'
+  containerRegistry: 'ryosrouteplanner.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile.production'
+  tag: '$(Build.BuildId)'
+  
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
 
-- script: |
-    npm install
-    npm build
-    npm run test:ci
-  displayName: 'build and test'
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.x'
+      displayName: 'Install Node.js'
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: 'junit.xml'
-    testRunTitle: 'Jest Unit Test'
+    - script: |
+        npm install
+        npm build
+        npm run test:ci
+      displayName: 'build and test'
 
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
-    failIfCoverageEmpty: true
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'junit.xml'
+        testRunTitle: 'Jest Unit Test'
+
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+        reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+        failIfCoverageEmpty: true
+
+- stage: Deploy
+  displayName: Deploy the container
+  dependsOn: Build
+  jobs:
+  - job: Deploy
+    displayName: Deploy job
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: AzureWebAppContainer@1
+        inputs:
+          azureSubscription: '従量課金 (e5c1b0a2-8d26-4e8a-a903-8e68ff7a62e3)'
+          appName: 'mtmr'
+          deployToSlotOrASE: true
+          resourceGroupName: 'route-planner'
+          slotName: 'production'
+          containers: '$(containerRegistry)/$(imageRepository):$(tag)'
